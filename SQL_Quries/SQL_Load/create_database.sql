@@ -1,0 +1,1 @@
+CREATE DATABASE contoso_sales_analysis;
