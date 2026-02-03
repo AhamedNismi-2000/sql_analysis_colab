@@ -132,3 +132,23 @@ CREATE TABLE public.sales(
     FOREIGN KEY (productkey)  REFERENCES public.product (productkey),
     FOREIGN KEY (storekey)    REFERENCES public.store (storekey)
  );
+
+
+/* Set table ownership to postgres to ensure full administrative control and avoid permission issues
+
+ALTER TABLE public.currencyexchange OWNER TO postgres;
+ALTER TABLE public.customer OWNER TO postgres;
+ALTER TABLE public."date" OWNER TO postgres;
+ALTER TABLE public.product OWNER TO postgres;
+ALTER TABLE public.store OWNER TO postgres;
+ALTER TABLE public.sales OWNER TO postgres;
+
+DROP TABLE IF EXISTS 
+   public.currencyexchange,
+   public.sales,
+   public.product,
+   public.store,
+   public."date",
+   public.customer
+   CASCADE;
+*/   
