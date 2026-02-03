@@ -143,12 +143,4 @@ ALTER TABLE public.product OWNER TO postgres;
 ALTER TABLE public.store OWNER TO postgres;
 ALTER TABLE public.sales OWNER TO postgres;
 
-DROP TABLE IF EXISTS 
-   public.currencyexchange,
-   public.sales,
-   public.product,
-   public.store,
-   public."date",
-   public.customer
-   CASCADE;
-*/   
+*/

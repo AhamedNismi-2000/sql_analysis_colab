@@ -31,4 +31,13 @@ COPY public.store
 FROM 'D:\Mine\SQL\sql_analysis_colab\csv_files\store.csv'
 WITH (FORMAT csv, HEADER true, DELIMITER',', ENCODING'UTF8', NULL '\N');
 
-
+/*
+DROP TABLE IF EXISTS 
+   public.currencyexchange,
+   public.sales,
+   public.product,
+   public.store,
+   public."date",
+   public.customer
+   CASCADE;
+*/   
