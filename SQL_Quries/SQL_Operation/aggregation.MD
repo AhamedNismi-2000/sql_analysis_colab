@@ -184,7 +184,8 @@ ORDER BY
 * Compares **net revenue per product category** between 2022 and 2023.
 * Useful for **year-over-year revenue analysis**.
 
-**Visualization:**
+**Visualization:**.
+<img src="../images/category_year.png" alt="Category vs sales 2022 and 2023" />
 ![Category vs sales 2022 and 2023 ](../images/category_year.png)
 *The above image shows net revenue comparison per category between 2022 and 2023.*
 
