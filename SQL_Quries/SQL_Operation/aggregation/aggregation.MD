@@ -114,7 +114,7 @@ ORDER BY
 * Helps analyze customer trends across regions.
 
 **Visualization:**
-![date vs continents](../images/customer_continent.png)
+![date vs continents](../../../images/customer_continent.png)
 *The above image shows net revenue comparison per category between 2022 and 2023.*
 ---
 
@@ -185,7 +185,7 @@ ORDER BY
 * Useful for **year-over-year revenue analysis**.
 
 **Visualization:**
-![Category vs sales 2022 and 2023 ](../images/category_year.png)
+![Category vs sales 2022 and 2023 ](../../../images/category_year.png)
 *The above image shows net revenue comparison per category between 2022 and 2023.*
 
 ---
