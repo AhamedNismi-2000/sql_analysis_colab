@@ -94,7 +94,7 @@ ORDER BY
 SELECT
     p.categoryname,
     ROUND(SUM(CASE WHEN s.orderdate BETWEEN '2022-01-01' AND '2022-12-31' THEN  (s.quantity * s.netprice * s.exchangerate)::numeric END ),2) AS total_net_revenue_2022,
-    ROUND(SUM(CASE WHEN s.orderdate BETWEEN '2023-01-01' AND '2023-12-31' THEN (s.quantity * s.netprice * s.exchangerate)::numeric END),2) AS total_net_revenue_2023
+    ROUND(SUM(CASE WHEN s.orderdate BETWEEN '2023-01-01' AND '2023-12-31' THEN  (s.quantity * s.netprice * s.exchangerate)::numeric END),2)AS total_net_revenue_2023
 FROM sales s
 LEFT JOIN product p ON s.productkey = p.productkey
 GROUP BY
