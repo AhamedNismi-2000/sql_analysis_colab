@@ -60,14 +60,14 @@ GROUP BY
      SELECT
      p.categoryname,
      ROUND(
-     (PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY CASE WHEN s.orderdate BETWEEN '2022-01-01' AND '2022-12-31' 
-                              THEN (s.quantity * s.netprice * s.exchangerate)END ))::numeric, 2) AS median_2022_netrevenue,     
+     PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY CASE WHEN s.orderdate BETWEEN '2022-01-01' AND '2022-12-31' 
+                              THEN (s.quantity * s.netprice * s.exchangerate)END )::numeric, 2) AS median_2022_netrevenue,     
      ROUND(
-     (PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY CASE WHEN s.orderdate BETWEEN '2023-01-01' AND '2023-12-31' 
-                              THEN (s.quantity * s.netprice * s.exchangerate)END ))::numeric, 2) AS median_2023_netrevenue,     
+     PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY CASE WHEN s.orderdate BETWEEN '2023-01-01' AND '2023-12-31' 
+                              THEN (s.quantity * s.netprice * s.exchangerate)END )::numeric, 2) AS median_2023_netrevenue,     
      ROUND(
-     (PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY CASE WHEN s.orderdate BETWEEN '2024-01-01' AND '2024-12-31' 
-                              THEN (s.quantity * s.netprice * s.exchangerate)END ))::numeric, 2) AS median_2024_netrevenue,     
+     PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY CASE WHEN s.orderdate BETWEEN '2024-01-01' AND '2024-12-31' 
+                              THEN (s.quantity * s.netprice * s.exchangerate)END )::numeric, 2) AS median_2024_netrevenue     
           FROM sales s LEFT JOIN product p ON s.productkey = p.productkey
           GROUP BY p.categoryname
           ORDER BY p.categoryname;     
