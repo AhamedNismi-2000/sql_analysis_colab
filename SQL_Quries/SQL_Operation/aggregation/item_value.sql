@@ -45,6 +45,47 @@ ORDER BY netprice DESC,quantity DESC;
 
           --    Query For Checking Purpose
 
+     WITH median_value AS (
+     SELECT ROUND(
+          PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY quantity*netprice*exchangerate)::numeric,2
+     ) AS median
+     FROM sales
+     WHERE orderdate BETWEEN '2022-01-01' AND '2023-12-31'
+     ),
+     netrev_year AS (
+     SELECT
+          orderdate,
+          productkey,
+          ROUND((quantity*netprice*exchangerate)::numeric ,2) AS netrev
+     FROM sales
+     )
+
+     SELECT 
+     p.categoryname, 
+     SUM(CASE 
+               WHEN nty.netrev < mv.median AND nty.orderdate BETWEEN '2022-01-01' AND '2022-12-31' 
+               THEN nty.netrev 
+          END) AS low_revenue_2022,
+
+     SUM(CASE 
+               WHEN nty.netrev >= mv.median AND nty.orderdate BETWEEN '2022-01-01' AND '2022-12-31' 
+               THEN nty.netrev 
+          END) AS high_revenue_2022,
+
+     SUM(CASE 
+               WHEN nty.netrev < mv.median AND nty.orderdate BETWEEN '2023-01-01' AND '2023-12-31' 
+               THEN nty.netrev 
+          END) AS low_revenue_2023,
+
+     SUM(CASE 
+               WHEN nty.netrev >= mv.median AND nty.orderdate BETWEEN '2023-01-01' AND '2023-12-31' 
+               THEN nty.netrev 
+          END) AS high_revenue_2023
+
+     FROM netrev_year nty
+     LEFT JOIN product p ON p.productkey = nty.productkey   -- Cross join instaed using comma 
+     CROSS JOIN median_value mv
+     GROUP BY p.categoryname;
 
 
 
@@ -54,7 +95,8 @@ ORDER BY netprice DESC,quantity DESC;
 
 
 
-          
+
+
     
 
 
