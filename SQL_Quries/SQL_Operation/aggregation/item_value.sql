@@ -43,7 +43,7 @@ ORDER BY netprice DESC,quantity DESC;
           GROUP BY  p.categoryname;
 
 
-          --    Query For Checking Purpose
+  --    Query For Checking Done Double CTE
 
      WITH median_value AS (
      SELECT ROUND(
@@ -52,6 +52,7 @@ ORDER BY netprice DESC,quantity DESC;
      FROM sales
      WHERE orderdate BETWEEN '2022-01-01' AND '2023-12-31'
      ),
+
      netrev_year AS (
      SELECT
           orderdate,
@@ -62,24 +63,16 @@ ORDER BY netprice DESC,quantity DESC;
 
      SELECT 
      p.categoryname, 
-     SUM(CASE 
-               WHEN nty.netrev < mv.median AND nty.orderdate BETWEEN '2022-01-01' AND '2022-12-31' 
-               THEN nty.netrev 
+     SUM(CASE  WHEN nty.netrev < mv.median AND nty.orderdate BETWEEN '2022-01-01' AND '2022-12-31'  THEN nty.netrev 
           END) AS low_revenue_2022,
 
-     SUM(CASE 
-               WHEN nty.netrev >= mv.median AND nty.orderdate BETWEEN '2022-01-01' AND '2022-12-31' 
-               THEN nty.netrev 
+     SUM(CASE WHEN nty.netrev >= mv.median AND nty.orderdate BETWEEN '2022-01-01' AND '2022-12-31'  THEN nty.netrev 
           END) AS high_revenue_2022,
 
-     SUM(CASE 
-               WHEN nty.netrev < mv.median AND nty.orderdate BETWEEN '2023-01-01' AND '2023-12-31' 
-               THEN nty.netrev 
+     SUM(CASE  WHEN nty.netrev < mv.median AND nty.orderdate BETWEEN '2023-01-01' AND '2023-12-31' THEN nty.netrev 
           END) AS low_revenue_2023,
 
-     SUM(CASE 
-               WHEN nty.netrev >= mv.median AND nty.orderdate BETWEEN '2023-01-01' AND '2023-12-31' 
-               THEN nty.netrev 
+     SUM(CASE   WHEN nty.netrev >= mv.median AND nty.orderdate BETWEEN '2023-01-01' AND '2023-12-31' THEN nty.netrev 
           END) AS high_revenue_2023
 
      FROM netrev_year nty
@@ -88,16 +81,6 @@ ORDER BY netprice DESC,quantity DESC;
      GROUP BY p.categoryname;
 
 
-
-
-
-
-
-
-
-
-
-    
 
 
 -- Categorize the sales items into High, medium, Low 
