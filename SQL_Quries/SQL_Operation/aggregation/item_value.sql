@@ -43,4 +43,27 @@ ORDER BY netprice DESC,quantity DESC;
           median_value as mv
           GROUP BY  p.categoryname;
           
-               
+
+
+-- Categorize the sales items into High, medium, Low 
+     WITH percentile AS ( 
+     SELECT 
+         
+          PERCENTILE_CONT(.25) WITHIN GROUP (ORDER BY ROUND((quantity*exchangerate*netprice)::numeric,2)) AS percentile_25_revenue,
+          PERCENTILE_CONT(.75) WITHIN GROUP (ORDER BY ROUND((quantity*exchangerate*netprice)::numeric,2)) AS percentile_75_revenue
+          FROM sales s
+          WHERE orderdate BETWEEN '2022-01-01' AND '2023-12-31'
+     )     
+
+     SELECT 
+     p.categoryname,
+     CASE 
+     WHEN ROUND((quantity*netprice*exchangerate)::numeric,2) <= prtl.percentile_25_revenue  THEN '3-Low'
+     WHEN ROUND((quantity*netprice*exchangerate)::numeric,2) >= prtl.percentile_75_revenue  THEN  '1-High'
+     ELSE '2-Medium' END AS revenue_tier,
+     SUM(ROUND((s.quantity*s.exchangerate*s.netprice)::numeric ,2)) AS total_revenue 
+
+     FROM sales s LEFT JOIN product p ON 
+     p.productkey = s.productkey,
+     percentile prtl
+     GROUP BY p.categoryname,revenue_tier;
