@@ -25,3 +25,25 @@ SELECT
     
 FROM sales      
 GROUP BY order_month
+
+
+-- DATE_PART()
+
+SELECT 
+     orderdate,
+     DATE_PART('year', orderdate) AS order_year,
+     DATE_PART('month', orderdate) AS order_month,
+     DATE_PART('day', orderdate) AS order_day
+FROM sales 
+ORDER BY RANDOM()  -- Return Random Output Instead of return ASC or DESC 
+LIMIT 10 ;     
+
+-- Use EXTRACT()
+SELECT 
+     orderdate,
+     EXTRACT (YEAR  FROM orderdate) order_year,
+     EXTRACT (MONTH FROM orderdate) order_month,
+     EXTRACT (DAY   FROM orderdate) order_day
+FROM sales 
+ORDER BY RANDOM()
+LIMIT 10 ;     
