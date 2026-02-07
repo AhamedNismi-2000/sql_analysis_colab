@@ -70,4 +70,4 @@ GROUP BY
                               THEN (s.quantity * s.netprice * s.exchangerate)END )::numeric, 2) AS median_2024_netrevenue     
           FROM sales s LEFT JOIN product p ON s.productkey = p.productkey
           GROUP BY p.categoryname
-          ORDER BY p.categoryname;     
+          ORDER BY p.categoryname; 
