@@ -23,3 +23,21 @@ SELECT *, ROUND((nd.netrevenue*100 /nd.daily_net_revenue)::numeric ,2) AS percen
 FROM netrevenue_day AS nd
 
 LIMIT 30;
+
+
+-- A cohort year is the year when a group of people (or customers/users) 
+--first started something  usually when they first signed up, purchased, or joined.
+
+    WITH yearly_chohort AS (
+        SELECT DISTINCT
+        customerkey,
+        EXTRACT(YEAR FROM MIN(orderdate) OVER(PARTITION BY customerkey))AS chohort_year
+        FROM sales
+    )
+    SELECT 
+    yc.chohort_year,
+    EXTRACT(YEAR FROM orderdate),
+    SUM(ROUND((quantity*netprice*exchangerate)::numeric,2)) AS net_revenue
+    FROM sales s LEFT JOIN yearly_chohort yc
+    ON yc.customerkey = s.customerkey
+    GROUP BY   yc.chohort_year,EXTRACT(YEAR FROM orderdate)
