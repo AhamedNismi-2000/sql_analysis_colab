@@ -35,9 +35,28 @@ LIMIT 30;
         FROM sales
     )
     SELECT 
+    yc.customerkey,
     yc.chohort_year,
-    EXTRACT(YEAR FROM orderdate),
+    EXTRACT(YEAR FROM orderdate) AS order_year,
     SUM(ROUND((quantity*netprice*exchangerate)::numeric,2)) AS net_revenue
     FROM sales s LEFT JOIN yearly_chohort yc
     ON yc.customerkey = s.customerkey
-    GROUP BY   yc.chohort_year,EXTRACT(YEAR FROM orderdate)
+    GROUP BY    yc.customerkey,yc.chohort_year,EXTRACT(YEAR FROM orderdate)
+
+
+
+-- Using  For Chohort Year 
+
+WITH yearly_chohort AS (
+    SELECT DISTINCT
+        customerkey,
+        EXTRACT(YEAR FROM MIN(orderdate) OVER (PARTITION BY customerkey)) AS chohort_year,
+        EXTRACT(YEAR FROM orderdate) AS order_year
+        FROM sales 
+)
+SELECT DISTINCT
+     chohort_year,
+     order_year,
+     COUNT(customerkey) OVER (PARTITION BY chohort_year , order_year) AS num_customers
+     FROM yearly_chohort 
+    ORDER BY chohort_year,order_year
