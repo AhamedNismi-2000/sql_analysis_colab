@@ -137,6 +137,7 @@ SELECT
      EXTRACT(YEAR FROM MIN(orderdate) OVER (PARTITION BY customerkey)) AS chohort_year
 FROM sales 
 )
-SELECT  * FROM chohort 
+SELECT 
+ * FROM chohort 
 WHERE chohort_year >= '2020'
 
