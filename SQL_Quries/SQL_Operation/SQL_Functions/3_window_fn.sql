@@ -100,5 +100,23 @@ correctness.
          FROM sales
          GROUP BY customerkey
 
+-- Customer LTV 
 
+    WITH yearly_cohort AS (
+    SELECT
+         customerkey,
+    EXTRACT(YEAR FROM MIN(orderdate)) AS cohort_year,
+         ROUND(SUM(quantity * netprice * exchangerate)::numeric ,2) AS customer_ltv
+    FROM
+          sales
+    GROUP BY
+          customerkey
+
+    )
+    
+    SELECT *,
+     ROUND(AVG(customer_ltv) OVER (PARTITION BY cohort_year), 2) AS avg_ltv_per_cohort
+
+    FROM
+          yearly_cohort
 
