@@ -113,10 +113,30 @@ correctness.
           customerkey
 
     )
-    
+
     SELECT *,
      ROUND(AVG(customer_ltv) OVER (PARTITION BY cohort_year), 2) AS avg_ltv_per_cohort
 
     FROM
           yearly_cohort
+
+-- When Filter Out the Window Function using WHERE clause it filter before the window function 
+ 
+
+SELECT 
+     customerkey,
+     EXTRACT(YEAR FROM MIN(orderdate) OVER (PARTITION BY customerkey)) AS chohort_year
+FROM sales 
+WHERE orderdate >= '2020-01-01'
+
+-- if you want to filter after window function use CTE or subquery
+
+WITH chohort AS ( 
+SELECT 
+     customerkey,
+     EXTRACT(YEAR FROM MIN(orderdate) OVER (PARTITION BY customerkey)) AS chohort_year
+FROM sales 
+)
+SELECT  * FROM chohort 
+WHERE chohort_year >= '2020'
 
