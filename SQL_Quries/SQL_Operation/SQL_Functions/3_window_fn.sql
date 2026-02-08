@@ -111,14 +111,10 @@ correctness.
           sales
     GROUP BY
           customerkey
-
     )
-
     SELECT *,
      ROUND(AVG(customer_ltv) OVER (PARTITION BY cohort_year), 2) AS avg_ltv_per_cohort
-
-    FROM
-          yearly_cohort
+    FROM yearly_cohort
 
 -- When Filter Out the Window Function using WHERE clause it filter before the window function 
  
@@ -141,3 +137,40 @@ SELECT
  * FROM chohort 
 WHERE chohort_year >= '2020'
 
+
+--- Chohort ltv
+
+WITH yearly_cohort AS (
+    SELECT 
+        customerkey,
+        EXTRACT(YEAR FROM MIN(orderdate)) AS cohort_year,
+        ROUND(SUM(quantity * netprice * exchangerate)::numeric ,2) AS total_customer_net_revenue
+    FROM sales
+    GROUP BY 
+        customerkey
+),
+
+cohort_summary AS (
+    SELECT 
+        cohort_year,
+        customerkey,
+       total_customer_net_revenue AS customer_ltv,
+        ROUND(AVG(total_customer_net_revenue) OVER (PARTITION BY cohort_year),2) AS avg_cohort_ltv
+    FROM yearly_cohort
+),
+
+cohort_final AS (
+    SELECT DISTINCT
+        cohort_year,
+        avg_cohort_ltv
+    FROM cohort_summary
+    ORDER BY 
+        cohort_year
+)
+
+SELECT 
+    *,
+    LAG(avg_cohort_ltv) OVER (ORDER BY cohort_year) AS prev_cohort_ltv,
+    ROUND( (avg_cohort_ltv - LAG(avg_cohort_ltv) OVER (ORDER BY cohort_year))*100 /
+        LAG(avg_cohort_ltv) OVER (ORDER BY cohort_year),2) AS ltv_change
+FROM cohort_final

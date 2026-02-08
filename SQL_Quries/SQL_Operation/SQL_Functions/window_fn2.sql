@@ -52,4 +52,22 @@ SELECT
     FIRST_VALUE(total_revenue) OVER(ORDER BY month) AS first_month_revenue,
     LAST_VALUE(total_revenue)  OVER (ORDER BY month ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_month_revenue,
     NTH_VALUE(total_revenue,3)  OVER (ORDER BY month ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS third_month_revenue
-    FROM monthly_revenue 
+    FROM monthly_revenue
+
+
+-- LAG()  , LEAD()
+
+    WITH monthly_revenue AS ( 
+    SELECT   
+        TO_CHAR(orderdate ,'YYYY-MM') AS month ,
+        ROUND(SUM(quantity*exchangerate*netprice)::numeric ,2) AS total_revenue
+        FROM sales
+        WHERE EXTRACT(YEAR FROM orderdate) = 2023
+        GROUP BY  TO_CHAR(orderdate ,'YYYY-MM')
+        ORDER BY  TO_CHAR(orderdate ,'YYYY-MM')
+    )
+
+     SELECT * ,
+     LAG(total_revenue) OVER (ORDER BY month) AS previous_month_revenue,
+     ROUND((total_revenue -  LAG(total_revenue) OVER (ORDER BY month))*100 / LAG(total_revenue) OVER (ORDER BY month),2) AS month_growth
+     FROM monthly_revenue 
