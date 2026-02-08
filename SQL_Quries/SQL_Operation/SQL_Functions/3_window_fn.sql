@@ -60,3 +60,45 @@ SELECT DISTINCT
      COUNT(customerkey) OVER (PARTITION BY chohort_year , order_year) AS num_customers
      FROM yearly_chohort 
     ORDER BY chohort_year,order_year
+
+
+    /*  
+    Window Functions run AFTER GROUP BY
+When using window functions in SQL, it's not recommended to combine them directly with
+GROUP BY . This is because:
+• Conflicting Aggregations: GROUP BY collapses rows into groups, but window functions
+operate on individual rows while maintaining access to the full dataset. This can lead to
+unexpected results or errors.
+• Better Alternatives: Use Common Table Expressions (CTEs) or subqueries to first
+apply the window function, then perform GROUP BY in a separate step for clarity and
+correctness.
+    */
+
+-- In Here if Need to Perform Group By Firstly Do CTE Then Make Group it Using Outer Query
+ WITH customer_order AS (
+        SELECT 
+            customerkey,
+            ROUND((quantity*netprice*exchangerate)::numeric,2) AS order_value,
+            COUNT(*) OVER (PARTITION BY customerkey) AS total_orders
+         FROM sales
+ )   
+
+ SELECT 
+      customerkey,
+      ROUND(AVG(order_value),2) AS net_revenue,
+      total_orders   
+  FROM customer_order 
+  GROUP BY customerkey,total_orders
+
+
+-- Without CTE You Can See the Conflict Between Window Function And Group BY 
+
+        SELECT 
+            customerkey,
+            ROUND(AVG((quantity*netprice*exchangerate)::numeric),2) AS total_revenue,
+            COUNT(*) OVER (PARTITION BY customerkey) AS total_orders
+         FROM sales
+         GROUP BY customerkey
+
+
+
