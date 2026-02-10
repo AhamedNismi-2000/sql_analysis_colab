@@ -71,3 +71,24 @@ SELECT
      LAG(total_revenue) OVER (ORDER BY month) AS previous_month_revenue,
      ROUND((total_revenue -  LAG(total_revenue) OVER (ORDER BY month))*100 / LAG(total_revenue) OVER (ORDER BY month),2) AS month_growth
      FROM monthly_revenue 
+
+
+-- Frame  Window Function  For  ROWS 
+
+
+    WITH monthly_revenue AS ( 
+    SELECT   
+        TO_CHAR(orderdate ,'YYYY-MM') AS month ,
+        ROUND(SUM(quantity*exchangerate*netprice)::numeric ,2) AS total_revenue
+        FROM sales
+        WHERE EXTRACT(YEAR FROM orderdate) = 2023
+        GROUP BY  TO_CHAR(orderdate ,'YYYY-MM')
+        ORDER BY  TO_CHAR(orderdate ,'YYYY-MM')
+    )
+
+    SELECT 
+          month,
+          total_revenue,
+          ROUND(AVG(total_revenue) OVER( ORDER BY month ROWS BETWEEN CURRENT ROW AND CURRENT ROW),2) AS net_revenue_current
+    FROM monthly_revenue 
+    GROUP BY month,total_revenue
