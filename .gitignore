@@ -1,3 +1,5 @@
 contoso_100k.sql
 csv_files/
 .vscode/
+.dbeaver
+.Scripts/.project
