@@ -22,7 +22,21 @@ WITH customer_revenue AS (
 )
 
 SELECT 
-    cr.*,  
-    MIN(cr.orderdate) OVER (PARTITION BY cr.customerkey) AS first_order_date,
-    EXTRACT(YEAR FROM MIN(cr.orderdate) OVER (PARTITION BY cr.customerkey)) AS cohort_year
+     customerkey, 
+     orderdate,
+     
+     num_orders,
+     total_net_revenue,
+     CONCAT(TRIM(givenname),' ',TRIM(surname)) AS combined_name,
+     age,
+     countryfull,
+     MIN(cr.orderdate) OVER (PARTITION BY cr.customerkey) AS first_order_date,
+    EXTRACT(YEAR FROM MIN(orderdate) OVER (PARTITION BY customerkey)) AS cohort_year
 FROM customer_revenue cr;
+
+
+
+
+SELECT * FROM cohort_summary
+
+-DROP VIEW cohort_summary 

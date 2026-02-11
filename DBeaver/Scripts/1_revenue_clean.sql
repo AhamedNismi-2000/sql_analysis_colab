@@ -11,3 +11,6 @@ SELECT
     FROM customer c 
     LEFT JOIN sales_data sd ON
     c.customerkey = sd.customerkey
+
+
+
