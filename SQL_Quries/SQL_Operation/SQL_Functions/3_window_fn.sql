@@ -28,7 +28,7 @@ LIMIT 30;
 -- A cohort year is the year when a group of people (or customers/users) 
 --first started something  usually when they first signed up, purchased, or joined.
 
-    WITH yearly_chohort AS (
+    WITH yearly_cohort AS (
         SELECT DISTINCT
         customerkey,
         EXTRACT(YEAR FROM MIN(orderdate) OVER(PARTITION BY customerkey))AS chohort_year
@@ -39,15 +39,15 @@ LIMIT 30;
     yc.chohort_year,
     EXTRACT(YEAR FROM orderdate) AS order_year,
     SUM(ROUND((quantity*netprice*exchangerate)::numeric,2)) AS net_revenue
-    FROM sales s LEFT JOIN yearly_chohort yc
+    FROM sales s LEFT JOIN yearly_cohort yc
     ON yc.customerkey = s.customerkey
-    GROUP BY    yc.customerkey,yc.chohort_year,EXTRACT(YEAR FROM orderdate)
+    GROUP BY    yc.customerkey,yc.chohort_year, EXTRACT(YEAR FROM orderdate)
 
 
 
--- Using  For Chohort Year 
+-- Using  For cohortYear 
 
-WITH yearly_chohort AS (
+WITH yearly_cohort AS (
     SELECT DISTINCT
         customerkey,
         EXTRACT(YEAR FROM MIN(orderdate) OVER (PARTITION BY customerkey)) AS chohort_year,
@@ -58,7 +58,7 @@ SELECT DISTINCT
      chohort_year,
      order_year,
      COUNT(customerkey) OVER (PARTITION BY chohort_year , order_year) AS num_customers
-     FROM yearly_chohort 
+     FROM yearly_cohort
     ORDER BY chohort_year,order_year
 
 
@@ -127,18 +127,18 @@ WHERE orderdate >= '2020-01-01'
 
 -- if you want to filter after window function use CTE or subquery
 
-WITH chohort AS ( 
+WITH cohort AS ( 
 SELECT 
      customerkey,
      EXTRACT(YEAR FROM MIN(orderdate) OVER (PARTITION BY customerkey)) AS chohort_year
 FROM sales 
 )
 SELECT 
- * FROM chohort 
+ * FROM cohort
 WHERE chohort_year >= '2020'
 
 
---- Chohort ltv
+--- cohortltv
 
 WITH yearly_cohort AS (
     SELECT 
